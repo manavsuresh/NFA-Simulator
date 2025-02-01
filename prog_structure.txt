@@ -1,0 +1,47 @@
+rm -rf *.o test sureshbabu_p1
+g++ sureshbabu_p1.cpp -o sureshbabu_p1
+
+
+How code works?
+FS(fstream) to access file
+SS(stringstream) to parse text
+storing all states in class as vector of objects{id,isstart,isaccept}
+storing all transitions in class as vector of objects{from,to,input}
+storing all possible paths in a tree and deleting parent nodes as we go down
+check all nodes at the current nodes for accept states and print them or print the nodes rejected at
+
+
+
+------------------------------
+state format:
+state x {start,accept,acceptstart,start accept}
+-where x [0,1000]
+
+transition format:
+transition x <from_state> {0/1} <to_state>
+
+Txtfile input format:
+Start State
+Accept State(s)
+Valid Transitions
+-----------------------------
+
+*Partial NFA in textfile
+*String given as input in cmd
+
+Program execution: <exec> <txtfile> <string>
+Output: Accept <state(s)>
+	Reject <state(s)>
+
+Summary:
+1.Parse the txt file
+2.Start->memory
+3.accepts->may be a list
+4.Transitions->matrix?
+
+
+
+-----------------------Idea dump--------
+-Use stacks to see which state(vector_pushback())
+-Brute force with multiple or nested stacks or check next state to predetermine?
+
