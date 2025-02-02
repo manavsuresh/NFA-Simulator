@@ -2,10 +2,11 @@ FLAGS = -Wall -g
 CC = g++
 EXEC = sureshbabu_p1
 
-all: clean $(EXEC)
+all: $(EXEC)
 
 $(EXEC): sureshbabu_p1.o
 	$(CC) $(CFLAGS) sureshbabu_p1.o -o $(EXEC)
+	rm -rf *.o	
 
 sureshbabu_p1.o: sureshbabu_p1.cpp
 	$(CC) $(CFLAGS) -c sureshbabu_p1.cpp -o sureshbabu_p1.o

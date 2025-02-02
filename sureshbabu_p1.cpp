@@ -197,7 +197,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (parseNFA(argv[1]) != 0) {
+    if (parseNFA(argv[1])) {
         return 1;
     }
     
