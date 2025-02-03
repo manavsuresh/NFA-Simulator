@@ -29,3 +29,4 @@ tests:
 	@echo "accept 4 5"
 	./sureshbabu_p1 sample_2.txt "0101110000"
 	@echo "accept 4 5 6"
+	
