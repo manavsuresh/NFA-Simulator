@@ -113,7 +113,6 @@ bool processString(const string& input) {
     vector<int> acceptStates;
     vector<int> rejectStates;
     
-    // Set initial states
     for (const auto& state : states) {
         if (state.isStart) {
             initialStates[state.id] = true;
@@ -124,14 +123,12 @@ bool processString(const string& input) {
     NFANode* root = new NFANode(initialStates);
     vector<NFANode*> currentLevel = {root};
     
-    // Process each input character
     for (char ch : input) {
         vector<NFANode*> nextLevel;
         
         for (NFANode* current : currentLevel) {
             vector<bool> nextStates(states.size(), false);
             
-            // Find all possible transitions
             for (const auto& transition : transitions) {
                 if (current->states[transition.fromState] && transition.input == ch) {
                     nextStates[transition.toState] = true;
@@ -143,7 +140,6 @@ bool processString(const string& input) {
             }
         }
         
-        // Clean up previous level except root
         if (!currentLevel.empty() && currentLevel[0] != root) {
             for (auto node : currentLevel) delete node;
         }
@@ -151,7 +147,6 @@ bool processString(const string& input) {
         currentLevel = nextLevel;
     }
     
-    // Check final states
     bool hasAccept = false;
     for (NFANode* finalNode : currentLevel) {
         for (int i = 0; i < states.size(); ++i) {
@@ -166,11 +161,9 @@ bool processString(const string& input) {
         }
     }
     
-    // Clean up remaining nodes
     for (auto node : currentLevel) delete node;
     delete root;
     
-    // Output results
     if (hasAccept) {
         sort(acceptStates.begin(), acceptStates.end());
         cout << "accept";
@@ -190,7 +183,6 @@ bool processString(const string& input) {
     }
 }
 
-// Update main to use it
 int main(int argc, char* argv[]) {
     if (argc != 3) {
         cerr << "Usage: " << argv[0] << " <txt_file> <input_string>\n";
