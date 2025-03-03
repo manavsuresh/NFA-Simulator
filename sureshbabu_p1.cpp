@@ -13,8 +13,10 @@ public:
     int id;
     bool isStart;
     bool isAccept;
+    bool exists;
 
-    State(int id) : id(id), isStart(false), isAccept(false) {}
+    State(int id) : id(id), isStart(false), isAccept(false), exists(false) {}
+    State(int id, bool exist): id(id), isStart(false), isAccept(false), exists(exist) {}
 };
 
 class Transition {
@@ -32,7 +34,10 @@ vector<Transition> transitions;
 int maxStates = 0;
 
 bool isValidState(int state) {
-    return state >= 0 && state < states.size();
+    for (const auto& s : states) {
+        if (s.id == state && s.exists == true) return true;
+    }
+    return false;
 }
 
 int parseNFA(const string& filename) {
@@ -41,6 +46,9 @@ int parseNFA(const string& filename) {
         cerr << "Error opening file\n";
         return 1;
     }
+
+    states.clear();
+    transitions.clear();
 
     string line;
     while (getline(file, line)) {
@@ -51,25 +59,34 @@ int parseNFA(const string& filename) {
 
         if (type == "state") {
             int stateNum;
-            string stateType;
+            string stateType1;
             
-            if (!(iss >> stateNum >> stateType)) {
+            if (!(iss >> stateNum)) {
                 cerr << "Error: Invalid state format\n";
                 continue;
             }
-                        
-            if(stateNum >= states.size()) {
-                states.resize(stateNum + 1, State(-1));
-                states[stateNum] = State(stateNum);
+            int prevSize = states.size();
+           if(stateNum >= states.size()) {
+                states.resize(stateNum + 1, State(-1, false));
+                for(int i = prevSize; i < states.size(); i++) {
+                    states[i] = State(i, false);
+                }
+                states[stateNum] = State(stateNum, true);
             }
-
-            if (stateType == "start" || stateType == "acceptstart" || 
-                stateType == "start accept") {
-                states[stateNum].isStart = true;
+            else {
+                states[stateNum].exists = true;
             }
-            if (stateType == "accept" || stateType == "acceptstart" || 
-                stateType == "start accept") {
-                states[stateNum].isAccept = true;
+            while (iss >> stateType1) {
+                if (stateType1 == "start") {
+                    states[stateNum].isStart = true;
+                }
+                else if (stateType1 == "accept") {
+                    states[stateNum].isAccept = true;
+                }
+                else if (stateType1 == "acceptstart" || stateType1 == "startaccept") {
+                    states[stateNum].isStart = true;
+                    states[stateNum].isAccept = true;
+                }
             }
 
         } else if (type == "transition") {
@@ -83,15 +100,31 @@ int parseNFA(const string& filename) {
                 continue;
             }
             input = inputStr[0];
+            int prevSize = states.size();
+            if(fromState >= states.size()) {
+                states.resize(fromState + 1, State(-1, false));
+                for(int i = prevSize; i < states.size(); i++) {
+                    if(states[i].id == -1) {
+                        states[i] = State(i, false);
+                    }
+                } 
+            }
+            else if(toState >= states.size()) {
+                states.resize(toState + 1, State(-1, false));
+                for(int i = prevSize; i < states.size(); i++) {
+                    if(states[i].id == -1) {
+                        states[i] = State(i, false);
+                    }
+                }
+            }
+            states[fromState].exists = true;
+            states[toState].exists = true;
             
-            
-            transitions.emplace_back(fromState, toState, input);
+            transitions.push_back(Transition(fromState, toState, input));
         }
     }
 
-    // cout << "Final count: " << states.size() << " states and " 
-    //      << transitions.size() << " transitions\n";
-    
+     
     file.close();
     return 0;
 }
@@ -145,6 +178,7 @@ bool processString(const string& input) {
         }
         
         currentLevel = nextLevel;
+        
     }
     
     bool hasAccept = false;

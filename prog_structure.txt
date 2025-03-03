@@ -10,7 +10,7 @@ storing all transitions in class as vector of objects{from,to,input}
 storing all possible paths in a tree and deleting parent nodes as we go down
 check all nodes at the current nodes for accept states and print them or print the nodes rejected at
 
-
+emplacce_back() - takes multiple args and can construct object directly at the back of the vector instead of construct and push_back()
 
 ------------------------------
 state format:
