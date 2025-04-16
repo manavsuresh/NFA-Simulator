@@ -3,6 +3,6 @@
 
  Format: ./sureshbabu_p1 <File_Name> <String>
 
- Sample testing(Linux): make all
-                        make tests
+ Sample testing(Linux): <br>-make all
+                        <br>-make tests
 
